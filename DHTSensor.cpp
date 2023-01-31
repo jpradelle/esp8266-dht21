@@ -1,12 +1,12 @@
 #include "DHTSensor.h"
+#include "conf.h"
+#include <DHT.h>
 #include <arduino-timer.h>
-
-#define INTERVAL 2 * 1000
 
 Timer<2> _timer;
 DHT _dht(0, 0);
 
-bool ranOnce = false;
+bool _ranOnce = false;
 float _humidity[] = {-100, -100, -100};
 float _temperature[] = {-100, -100, -100};
 
@@ -19,7 +19,7 @@ bool runMeasurement(void *argument) {
   _temperature[1] = _temperature[2];
   _temperature[2] = _dht.readTemperature();
 
-  ranOnce = true;
+  _ranOnce = true;
   DHTSensor_debug();
   
   return true;
@@ -37,7 +37,7 @@ void DHTSensor_update() {
 }
 
 float DHTSensor_getHumidity() {
-  if (!ranOnce)
+  if (!_ranOnce)
     return 50;
   
   if (_humidity[0] == -100)
@@ -47,7 +47,7 @@ float DHTSensor_getHumidity() {
 }
 
 float DHTSensor_getTemperature() {
-  if (!ranOnce)
+  if (!_ranOnce)
     return 20;
 
   if (_temperature[0] == -100)
@@ -57,14 +57,7 @@ float DHTSensor_getTemperature() {
 }
 
 void DHTSensor_debug() {
-  char strHumidity[10], strTemperature[10];
-  dtostrf(DHTSensor_getHumidity(), 1, 2, strHumidity);
-  dtostrf(DHTSensor_getTemperature(), 1, 2, strTemperature);
-
-  Serial.print("Humidity: ");
-  Serial.print(strHumidity);
-  Serial.print(" %\t");
-  Serial.print("Temperature: ");
-  Serial.print(strTemperature);
-  Serial.println(" °C");
+  char str[50];
+  snprintf(str, 50, "Humidity: %.2f%%\tTemperature: %.2f°C", DHTSensor_getHumidity(), DHTSensor_getTemperature());
+  Serial.println(str);
 }

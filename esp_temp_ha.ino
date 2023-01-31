@@ -1,8 +1,3 @@
-/*
- * Depends on Adafruit DHT Arduino library
- * https://github.com/adafruit/DHT-sensor-library
- */
-
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -10,78 +5,26 @@
 #include "DHTSensor.h"
 #include "conf.h"
 
-#define DHTTYPE DHT21   // DHT Shield uses DHT 11
-#define DHTPIN D4       // DHT Shield uses pin D4
-
 // Listen for HTTP requests on standard port 80
 ESP8266WebServer server(80);
 
-// Initialize DHT sensor
-// Note that older versions of this library took an optional third parameter to
-// tweak the timings for faster processors.  This parameter is no longer needed
-// as the current DHT reading algorithm adjusts itself to work on faster procs.
-// DHT dht(DHTPIN, DHTTYPE);
-
-// float humidity, temperature;                 // Raw float values from the sensor
-// char str_humidity[10], str_temperature[10];  // Rounded sensor values and as strings
-// Generally, you should use "unsigned long" for variables that hold time
-// unsigned long previousMillis = 0;            // When the sensor was last read
-// const long interval = 2000;                  // Wait this long until reading again
-
-void handle_root() {
-  server.send(200, "text/plain", "WeMos DHT Server. Get /temp or /humidity");
+void handleRoot() {
+  server.send(200, "text/plain", "DHT Server. Get /temp or /humidity");
   delay(100);
 }
 
-// void read_sensor() {
-//   // Wait at least 2 seconds seconds between measurements.
-//   // If the difference between the current time and last time you read
-//   // the sensor is bigger than the interval you set, read the sensor.
-//   // Works better than delay for things happening elsewhere also.
-//   unsigned long currentMillis = millis();
-
-//   if (currentMillis - previousMillis >= interval) {
-//     // Save the last time you read the sensor
-//     previousMillis = currentMillis;
-
-//     // Reading temperature and humidity takes about 250 milliseconds!
-//     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
-//     humidity = dht.readHumidity();        // Read humidity as a percent
-//     temperature = dht.readTemperature();  // Read temperature as Celsius
-
-//     // Check if any reads failed and exit early (to try again).
-//     if (isnan(humidity) || isnan(temperature)) {
-//       Serial.println("Failed to read from DHT sensor!");
-//       return;
-//     }
-
-//     // Convert the floats to strings and round to 2 decimal places
-//     dtostrf(humidity, 1, 2, str_humidity);
-//     dtostrf(temperature, 1, 2, str_temperature);
-
-//     Serial.print("Humidity: ");
-//     Serial.print(str_humidity);
-//     Serial.print(" %\t");
-//     Serial.print("Temperature: ");
-//     Serial.print(str_temperature);
-//     Serial.println(" °C");
-//   }
-// }
-
-void setup(void)
-{
-  // Open the Arduino IDE Serial Monitor to see what the code is doing
-  Serial.begin(9600);
-  // dht.begin();
-
-  Serial.println("WeMos DHT Server");
-  Serial.println("");
-
+bool wifiConnect() {
   // Connect to your WiFi network
-  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+  if (!WiFi.config(
+      IPAddress(WIFI_LOCAL_IP),
+      IPAddress(WIFI_GATEWAY),
+      IPAddress(WIFI_SUBNET),
+      IPAddress(WIFI_PRIMARY_DNS),
+      IPAddress(WIFI_SECONDARY_DNS))) {
     Serial.println("STA Failed to configure");
+    return false;
   }
-  WiFi.begin(ssid, password);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting");
 
   // Wait for successful connection
@@ -91,32 +34,33 @@ void setup(void)
   }
   Serial.println("");
   Serial.print("Connected to: ");
-  Serial.println(ssid);
+  Serial.println(WIFI_SSID);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   Serial.println("");
+  return true;
+}
 
-  // Initial read
-  // read_sensor();
+void setup() {
+  Serial.begin(9600);
+
+  Serial.println("DHT Server");
+  Serial.println("");
+
+  wifiConnect();
 
   // Handle http requests
-  server.on("/", handle_root);
+  server.on("/", handleRoot);
 
   server.on("/temp", [](){
-    // read_sensor();
     char response[50];
-    char strTemperature[10];
-    dtostrf(DHTSensor_getTemperature(), 1, 2, strTemperature);
-    snprintf(response, 50, "Temperature: %s °C", strTemperature);
+    snprintf(response, 50, "Temperature: %.2f°C", DHTSensor_getTemperature());
     server.send(200, "text/plain", response);
   });
 
   server.on("/humidity", [](){
-    // read_sensor();
     char response[50];
-    char strHumidity[10];
-    dtostrf(DHTSensor_getHumidity(), 1, 2, strHumidity);
-    snprintf(response, 50, "Humidity: %s %", strHumidity);
+    snprintf(response, 50, "Humidity: %.2f%%", DHTSensor_getHumidity());
     server.send(200, "text/plain", response);
   });
 
@@ -127,8 +71,7 @@ void setup(void)
   DHTSensor_init(DHTPIN, DHTTYPE);
 }
 
-void loop(void)
-{
+void loop() {
   // Listen for http requests
   server.handleClient();
   DHTSensor_update();
