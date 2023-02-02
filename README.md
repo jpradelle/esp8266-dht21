@@ -6,3 +6,4 @@ Build and flash using arduino IDE
 Needed library:
 * https://github.com/contrem/arduino-timer
 * https://github.com/adafruit/DHT-sensor-library
+* https://github.com/knolleary/pubsubclient

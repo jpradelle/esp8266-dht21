@@ -2,11 +2,18 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <DHT.h>
+#include <PubSubClient.h>
+#include <arduino-timer.h>
 #include "DHTSensor.h"
 #include "conf.h"
 
 // Listen for HTTP requests on standard port 80
 ESP8266WebServer server(80);
+
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
+
+Timer<2> mqttPublishTimer;
 
 void handleRoot() {
   server.send(200, "text/plain", "DHT Server. Get /temp or /humidity");
@@ -41,6 +48,33 @@ bool wifiConnect() {
   return true;
 }
 
+bool mqttPublish(void*) {
+  if (!mqttClient.connected()) {
+    Serial.print("Attempting MQTT connection on ");
+    Serial.print(MQTT_ADDRESS);
+    Serial.print(":");
+    Serial.print(MQTT_PORT);
+    Serial.print(" ... ");
+    // Attempt to connect
+    if (mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
+      Serial.println("connected");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.println(mqttClient.state());
+    }
+  }
+
+  if (mqttClient.connected()) {
+      // Once connected, publish an announcement...
+      char str[50];
+      snprintf(str, 50, "{\"humidity\": %.2f, \"temperature\": %.2f}", DHTSensor_getHumidity(), DHTSensor_getTemperature());
+
+      mqttClient.publish(MQTT_OUT_TOPIC, str);
+  }
+
+  return true;
+}
+
 void setup() {
   Serial.begin(9600);
 
@@ -68,6 +102,10 @@ void setup() {
   server.begin();
   Serial.println("HTTP server started");
 
+  // MQTT config
+  mqttClient.setServer(MQTT_ADDRESS, MQTT_PORT);
+  mqttPublishTimer.every(MQTT_PUBLISH_INTERVAL, mqttPublish);
+
   DHTSensor_init(DHTPIN, DHTTYPE);
 }
 
@@ -75,5 +113,6 @@ void loop() {
   // Listen for http requests
   server.handleClient();
   DHTSensor_update();
+  mqttPublishTimer.tick();
   delay(1);
 }

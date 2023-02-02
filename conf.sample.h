@@ -12,6 +12,15 @@
 #define WIFI_PRIMARY_DNS 192, 168, 100, 1
 #define WIFI_SECONDARY_DNS 192, 168, 100, 1
 
+// MQTT
+#define MQTT_ADDRESS "192.168.100.1"
+#define MQTT_PORT 1883
+#define MQTT_USER "MQTT_USER"
+#define MQTT_PASSWORD "MQTT_PASSWORD"
+#define MQTT_CLIENT_ID "ESP8266-001" // Client id (can be random)
+#define MQTT_OUT_TOPIC "ESP8266-001/temperatureAndHumidity"
+#define MQTT_PUBLISH_INTERVAL 60 * 1000
+
 // DHT conf
 #define DHTTYPE DHT21
 #define DHTPIN D4
