@@ -1,2 +1,6 @@
-conf.h
+esp/conf.h
 
+ui/node_modules
+ui/dist
+
+.idea
