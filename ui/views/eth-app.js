@@ -1,9 +1,9 @@
 import {html, LitElement} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
-import style from './main-app.scss';
+import style from './eth-app.scss';
 
-@customElement('main-app')
-class MainApp extends LitElement {
+@customElement('eth-app')
+class EthApp extends LitElement {
   static styles = style;
 
   @property({type: Number})
@@ -19,8 +19,6 @@ class MainApp extends LitElement {
   render() {
     return html`
       <mwc-drawer hasHeader type="modal" ?open="${this.__drawerOpened}" @MDCDrawer:closed="${this.__closeDrawer}">
-        <span slot="title">Drawer Title</span>
-        <span slot="subtitle">subtitle</span>
         <div>
           <p>Drawer content!</p>
           <mwc-icon-button icon="gesture"></mwc-icon-button>
@@ -29,10 +27,12 @@ class MainApp extends LitElement {
         <div slot="appContent">
           <mwc-top-app-bar-fixed>
             <mwc-icon-button icon="menu" slot="navigationIcon" @click="${this.__openDrawer}"></mwc-icon-button>
-            <div slot="title">Title</div>
+            <div slot="title">ESP Temperature and Humidity</div>
             <div class="app-content">
-              <p>The count is: ${this.count}</p>
-              <button @click="${(this.clickHandler)}">Click</button>
+              <eth-page-box>
+                <p>The count is: ${this.count}</p>
+                <button @click="${(this.clickHandler)}">Click</button>
+              </eth-page-box>
             </div>
           </mwc-top-app-bar-fixed>
         </div>
