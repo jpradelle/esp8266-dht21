@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
   devServer: {
@@ -77,5 +78,8 @@ module.exports = {
         { from: "node_modules/material-icons/iconfont/material-icons.woff2", to: "material-icons.woff2" }
       ]
     }),
+    new CompressionPlugin({
+      test: /\.(js|html)$/,
+    })
   ],
 };
