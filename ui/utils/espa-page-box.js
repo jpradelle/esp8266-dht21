@@ -1,9 +1,9 @@
 import {html, LitElement} from 'lit';
 import {customElement} from 'lit/decorators.js';
-import style from './eth-page-box.scss';
+import style from './espa-page-box.scss';
 
-@customElement('eth-page-box')
-class EthPageBox extends LitElement {
+@customElement('espa-page-box')
+class EspaPageBox extends LitElement {
   static styles = style;
 
   render() {

@@ -622,6 +622,28 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@polymer/app-route@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@polymer/app-route/-/app-route-3.0.2.tgz#749096fb610fb15d27c7b68446406f30786cf93d"
+  integrity sha512-8Y34evmsaYh7ONr+zLwLzXaU0iOZZQj1E2uB3iaToQHbOP1POhKlnmAycBQ/eFB8BwrdSUBaDQk+rZhio78FQw==
+  dependencies:
+    "@polymer/iron-location" "^3.0.0-pre.26"
+    "@polymer/polymer" "^3.0.0"
+
+"@polymer/iron-location@^3.0.0-pre.26":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@polymer/iron-location/-/iron-location-3.0.2.tgz#7ca2df089c57deb8a6f54f5cc3722af0ff871441"
+  integrity sha512-75XlPsrm6RQUPNzWWaA0TnTQaWZUYX8UB4Q6WCjikKWzmaSCCxlBrVVYf8WRqtCxw/PeCvLn5kGL6qhTlNTCEA==
+  dependencies:
+    "@polymer/polymer" "^3.0.0"
+
+"@polymer/polymer@^3.0.0":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@polymer/polymer/-/polymer-3.5.1.tgz#4b5234e43b8876441022bcb91313ab3c4a29f0c8"
+  integrity sha512-JlAHuy+1qIC6hL1ojEUfIVD58fzTpJAoCxFwV5yr0mYTXV1H8bz5zy0+rC963Cgr9iNXQ4T9ncSjC2fkF9BQfw==
+  dependencies:
+    "@webcomponents/shadycss" "^1.9.1"
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -773,11 +795,6 @@
   dependencies:
     "@types/node" "*"
 
-"@web-types/lit@^2.0.0-3":
-  version "2.0.0-3"
-  resolved "https://registry.yarnpkg.com/@web-types/lit/-/lit-2.0.0-3.tgz#dc7c7d6d3500b1dd298d86fc130ba84670e1d609"
-  integrity sha512-vZG6zfQ8+gM5Qsv0D5k9X8f/cBqk3y8qhgy0y5g+or+hi3PH6UNNMBMd6QRrlBZUoXCXR/cpVvfPTDj9w5FlwQ==
-
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.1.tgz#2bfd767eae1a6996f432ff7e8d7fc75679c0b6a7"
@@ -898,6 +915,11 @@
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
+
+"@webcomponents/shadycss@^1.9.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@webcomponents/shadycss/-/shadycss-1.11.1.tgz#add19d5e0db4a014e143d2278921347dcd8f0a55"
+  integrity sha512-qSok/oMynEgS99wFY5fKT6cR1y64i01RkHGYOspkh2JQsLSM8pjciER+gu3fqTx589y/7LoSuyB5G9Rh7dyXaQ==
 
 "@webpack-cli/configtest@^2.0.1":
   version "2.0.1"
@@ -2817,6 +2839,11 @@ lit-scss-loader@^2.0.1:
   dependencies:
     clean-css "^4.2.1"
 
+lit-web-types@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/lit-web-types/-/lit-web-types-0.1.5.tgz#c26321b67bbb1df7f2e8a94e7fea881dc421e0cd"
+  integrity sha512-Ga1tObbhMJmwxQ5/8gC5BlXN97aFzK1so5zb3AuuecGP2Z6L2WTtlKSiWVQIDdgBweabF+VDgqeSxE03a5hQPQ==
+
 lit@^2.0.0, lit@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/lit/-/lit-2.6.1.tgz#5951a2098b9bde5b328c73b55c15fdc0eefd96d7"
@@ -3139,6 +3166,11 @@ p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
+
+paper-elements-web-types@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/paper-elements-web-types/-/paper-elements-web-types-0.2.1.tgz#308469052cbac7f2de0c61dcdae692156c534ad8"
+  integrity sha512-Zr55GYieGYfTFW3Va4+bY+9xRu+SthLyXcFxDsx6u6Hh8AsYCVeGPfafYTkwGyT4j6IJtZ4UtaJTFAPWbePeTA==
 
 param-case@^3.0.3, param-case@^3.0.4:
   version "3.0.4"
