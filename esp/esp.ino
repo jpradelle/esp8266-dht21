@@ -1,24 +1,23 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebSrv.h>
 #include <DHT.h>
 #include <PubSubClient.h>
 #include <arduino-timer.h>
+#include <ArduinoOTA.h>
+#include <AsyncJson.h>
+#include <ArduinoJson.h>
 #include "DHTSensor.h"
 #include "conf.h"
 
 // Listen for HTTP requests on standard port 80
-ESP8266WebServer server(80);
+AsyncWebServer server(80);
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 Timer<2> mqttPublishTimer;
-
-void handleRoot() {
-  server.send(200, "text/plain", "DHT Server. Get /temp or /humidity");
-  delay(100);
-}
 
 bool wifiConnect() {
   // Connect to your WiFi network
@@ -83,19 +82,39 @@ void setup() {
 
   wifiConnect();
 
-  // Handle http requests
-  server.on("/", handleRoot);
+  // Initialize SPIFFS
+  if(!SPIFFS.begin()){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
+  
+  ArduinoOTA.begin();
 
-  server.on("/temp", [](){
-    char response[50];
-    snprintf(response, 50, "Temperature: %.2f°C", DHTSensor_getTemperature());
-    server.send(200, "text/plain", response);
+  // Handle http requests
+  // UI content
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.html.gz", "text/html");
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
+  });
+  
+  server.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.js.gz", "application/javascript");
+    response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
+  });
+  
+  server.on("/material-icons.woff2", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/material-icons.woff2");
   });
 
-  server.on("/humidity", [](){
-    char response[50];
-    snprintf(response, 50, "Humidity: %.2f%%", DHTSensor_getHumidity());
-    server.send(200, "text/plain", response);
+  server.on("/api/sensorData", HTTP_GET, [](AsyncWebServerRequest *request){
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    DynamicJsonDocument jsonBuffer(50);
+    jsonBuffer["temperature"] = DHTSensor_getTemperature();
+    jsonBuffer["humidity"] = DHTSensor_getHumidity();
+    serializeJson(jsonBuffer, *response);
+    request->send(response);
   });
 
   // Start the web server
@@ -110,9 +129,8 @@ void setup() {
 }
 
 void loop() {
-  // Listen for http requests
-  server.handleClient();
   DHTSensor_update();
   mqttPublishTimer.tick();
+  ArduinoOTA.handle();
   delay(1);
 }
