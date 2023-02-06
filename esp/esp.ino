@@ -8,13 +8,18 @@
 #include <ArduinoOTA.h>
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
+#include <LittleFS.h>
+#include "ESPAdminServer.h"
 #include "DHTSensor.h"
+#include "ESPAdminServerDHTModule.h"
 #include "conf.h"
 
 // Listen for HTTP requests on standard port 80
 AsyncWebServer server(80);
 
 WiFiClient espClient;
+ESPAdminServer espAdminServer;
+ESPAdminServerDHTModule dhtModule;
 PubSubClient mqttClient(espClient);
 
 Timer<2> mqttPublishTimer;
@@ -82,40 +87,32 @@ void setup() {
 
   wifiConnect();
 
-  // Initialize SPIFFS
-  if(!SPIFFS.begin()){
-    Serial.println("An Error has occurred while mounting SPIFFS");
+  // Initialize LittleFS
+  if(!LittleFS.begin()){
+    Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
   
   ArduinoOTA.begin();
 
   // Handle http requests
-  // UI content
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.html.gz", "text/html");
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  });
-  
-  server.on("/index.js", HTTP_GET, [](AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.js.gz", "application/javascript");
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
-  });
-  
-  server.on("/material-icons.woff2", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/material-icons.woff2");
-  });
-
-  server.on("/api/sensorData", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/api/sensorData2", HTTP_GET, [](AsyncWebServerRequest *request){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     DynamicJsonDocument jsonBuffer(50);
+    /*
     jsonBuffer["temperature"] = DHTSensor_getTemperature();
     jsonBuffer["humidity"] = DHTSensor_getHumidity();
+    /*/
+    jsonBuffer["temperature"] = 20;
+    jsonBuffer["humidity"] = 50;
+    //*/
     serializeJson(jsonBuffer, *response);
     request->send(response);
   });
+
+  espAdminServer = ESPAdminServer(server);
+  espAdminServer.addModule(dhtModule);
+  espAdminServer.setup();
 
   // Start the web server
   server.begin();
@@ -132,5 +129,6 @@ void loop() {
   DHTSensor_update();
   mqttPublishTimer.tick();
   ArduinoOTA.handle();
+  espAdminServer.loop();
   delay(1);
 }

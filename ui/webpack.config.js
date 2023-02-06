@@ -82,4 +82,14 @@ module.exports = {
       test: /\.(js|html)$/,
     })
   ],
+  resolve: {
+    alias: {
+      '@material': path.resolve(__dirname, 'node_modules/@material')
+    }
+  },
+  devServer: {
+    proxy: {
+      '/api': 'http://192.168.100.212'
+    }
+  }
 };

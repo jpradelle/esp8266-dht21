@@ -19,14 +19,14 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
   }
 
   getIcon() {
-    return 'wifi'
+    return 'wifi';
   }
 
   getName() {
-    return 'Wifi admin'
+    return 'Wifi admin';
   }
 
   getRoutePath() {
-    return 'wifi-admin'
+    return 'wifi-admin';
   }
 }
