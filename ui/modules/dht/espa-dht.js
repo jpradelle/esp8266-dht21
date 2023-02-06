@@ -3,6 +3,7 @@ import {customElement, state} from 'lit/decorators.js';
 import {when} from 'lit/directives/when.js';
 // import style from './espa-wifi-admin.scss';
 import {EspaModule} from '../espa-module';
+import {roundFormatter} from '../../utils/form/espa-form-bind.js';
 
 @customElement('espa-dht')
 class EspaWifiAdmin extends EspaModule(LitElement) {
@@ -34,16 +35,26 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
     return html`
       <espa-page-box>
         <div>
-          Temperature: ${this.__temperature} °C
+          Temperature: ${parseFloat(this.__temperature).toFixed(2)} °C
         </div>
         <div>
-          Humidity: ${this.__humidity} %
+          Humidity: ${parseFloat(this.__humidity).toFixed(2)} %
         </div>
       </espa-page-box>
       
       <espa-page-box>
         Configuration
         ${when(this.__sensorConfiguration, () => html`
+          <espa-form .value="${this.__sensorConfiguration}">
+            <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
+              <mwc-textfield label="Temperature Offset"></mwc-textfield>
+            </espa-form-bind>
+            <espa-form-bind name="humidityOffset" type="float" .formatter="${roundFormatter(2)}">
+              <mwc-textfield label="Humidity Offset"></mwc-textfield>
+            </espa-form-bind>
+            <espa-form-submit slot="buttons" .submit="${this.__updateConfiguration}"></espa-form-submit>
+          </espa-form>
+          
           <div>
             Temperature: ${this.__sensorConfiguration.temperatureOffset} °C
           </div>
@@ -84,13 +95,15 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
     this.__sensorConfiguration = await res.json();
   }
 
-  __updateConfiguration() {
-    fetch('/api/dht/updateConfiguration', {
+  async __updateConfiguration(value) {
+    const res = await fetch('/api/dht/updateConfiguration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({temperatureOffset: -0.75, humidityOffset: -0.75})
+      body: JSON.stringify(value)
     });
+
+    return await res.json();
   }
 }

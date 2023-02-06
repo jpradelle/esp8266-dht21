@@ -35,6 +35,7 @@
     "@material/mwc-button": "^0.27.0",
     "@material/mwc-drawer": "^0.27.0",
     "@material/mwc-icon-button": "^0.27.0",
+    "@material/mwc-textfield": "^0.27.0",
     "@material/mwc-top-app-bar-fixed": "^0.27.0",
     "@polymer/app-route": "^3.0.2",
     "lit": "^2.6.1",
