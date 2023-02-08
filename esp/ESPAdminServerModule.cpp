@@ -58,3 +58,7 @@ void ESPAdminServerModule::jsonResponse(AsyncWebServerRequest *request, JsonDocu
   serializeJson(jsonDoc, *response);
   request->send(response);
 }
+
+String ESPAdminServerModule::getConfigurationFileName() {
+  return String(m_configurationFile);
+}

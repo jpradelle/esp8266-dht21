@@ -1,10 +1,11 @@
 import {html, LitElement} from 'lit';
-import {customElement} from 'lit/decorators.js';
+import {customElement, state} from 'lit/decorators.js';
 // import style from './espa-wifi-admin.scss';
 import {EspaModule} from '../espa-module';
+import './espa-device-configuration.js';
 
-@customElement('espa-info')
-class EspaWifiAdmin extends EspaModule(LitElement) {
+@customElement('espa-device')
+class EspaDevice extends EspaModule(LitElement) {
   // static styles = style;
 
   render() {
@@ -12,21 +13,19 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
       return '';
 
     return html`
-      <espa-page-box>
-        Info page
-      </espa-page-box>
+      <espa-device-configuration></espa-device-configuration>
     `;
   }
 
   getIcon() {
-    return 'info';
+    return 'hardware';
   }
 
   getName() {
-    return 'Info';
+    return 'Device';
   }
 
   getRoutePath() {
-    return 'info';
+    return 'device';
   }
 }

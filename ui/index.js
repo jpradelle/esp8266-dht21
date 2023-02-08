@@ -9,5 +9,5 @@ import './utils/espa-page-box.js';
 import './utils/form/espa-form.js';
 
 import './modules/wifi-admin/espa-wifi-admin.js';
-import './modules/info/espa-info.js';
+import './modules/device/espa-device.js';
 import './modules/dht/espa-dht.js';

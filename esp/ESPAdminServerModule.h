@@ -18,6 +18,7 @@ public:
   virtual ~ESPAdminServerModule() {}
   virtual void setup(AsyncWebServer &server) = 0;
   virtual void loop(AsyncWebServer &server) = 0;
+  String getConfigurationFileName();
 };
 
 #endif
