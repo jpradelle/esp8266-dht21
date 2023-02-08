@@ -1,10 +1,14 @@
 import {html, LitElement} from 'lit';
 import {customElement, property, state} from 'lit/decorators.js';
+import {EspaNotification} from '../espa-notification.js';
 
 @customElement('espa-form-submit')
 class EspaFormSubmit extends LitElement {
   @property({type: Function, attribute: false})
   submit;
+
+  @property({attribute: 'success-message'})
+  successMessage;
 
   form;
 
@@ -34,7 +38,7 @@ class EspaFormSubmit extends LitElement {
     try {
       const res = await this.submit(this.form.value);
       if (res.success) {
-        console.log('ok');
+        EspaNotification.success(this, this.successMessage);
       } else {
         console.log('fail')
       }

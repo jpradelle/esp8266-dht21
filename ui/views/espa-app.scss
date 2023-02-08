@@ -25,6 +25,19 @@ mwc-top-app-bar-fixed {
   //margin: 10px;
 }
 
+/*
+TODO notification theme, but not supported by mwc-snackbar :(
+.notification {
+  &.success {
+    color: var(--paper-green-200);
+  }
+
+  &.error {
+    color: var(--paper-red-200);
+  }
+}
+*/
+
 // Colors
 :host {
   --paper-red-50: #ffebee;

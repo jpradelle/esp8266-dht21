@@ -9,6 +9,7 @@ private:
   ESPAdminServerModule* m_modules[5];
   short m_moduleCount, m_moduleSize;
   AsyncWebServer *m_server;
+  bool m_resetRequested;
   
 public:
   ESPAdminServer();

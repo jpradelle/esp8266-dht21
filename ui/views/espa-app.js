@@ -3,6 +3,7 @@ import {customElement, state, queryAssignedElements} from 'lit/decorators.js';
 import style from './espa-app.scss';
 import '@polymer/app-route/app-location.js';
 import '@polymer/app-route/app-route.js';
+import '@material/mwc-snackbar';
 
 @customElement('espa-app')
 class EspaApp extends LitElement {
@@ -25,6 +26,18 @@ class EspaApp extends LitElement {
 
   @state()
   __routeData;
+
+  __notifications = new Set();
+
+  constructor() {
+    super();
+
+    this.addEventListener('ui-notification', e => {
+      console.log(e, e.detail);
+      this.__notifications.add(e.detail);
+      this.requestUpdate();
+    });
+  }
 
   render() {
     return html`
@@ -52,6 +65,12 @@ class EspaApp extends LitElement {
           </mwc-top-app-bar-fixed>
         </div>
       </mwc-drawer>
+
+      ${Array.from(this.__notifications.values()).map(notif => html`
+        <mwc-snackbar labelText="${notif.message}" open class="notification ${notif.type}">
+          <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
+        </mwc-snackbar>
+      `)}
     `;
   }
 

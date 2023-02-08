@@ -3,6 +3,7 @@ import '@material/mwc-top-app-bar-fixed';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
 import '@material/mwc-textfield';
+import '@material/mwc-dialog';
 
 import './views/espa-app.js';
 import './utils/espa-page-box.js';

@@ -52,7 +52,10 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
             <espa-form-bind name="humidityOffset" type="float" .formatter="${roundFormatter(2)}">
               <mwc-textfield label="Humidity Offset"></mwc-textfield>
             </espa-form-bind>
-            <espa-form-submit slot="buttons" .submit="${this.__updateConfiguration}"></espa-form-submit>
+            <espa-form-submit
+                slot="buttons"
+                .submit="${this.__updateConfiguration}"
+                success-message="Configuration updated"></espa-form-submit>
           </espa-form>
           
           <div>

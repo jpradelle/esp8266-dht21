@@ -2,11 +2,11 @@
 #include <cstddef>
 #include <LittleFS.h>
 
-ESPAdminServer::ESPAdminServer() : m_moduleCount(0), m_server(NULL) {
+ESPAdminServer::ESPAdminServer() : m_moduleCount(0), m_server(NULL), m_resetRequested(false) {
   
 }
 
-ESPAdminServer::ESPAdminServer(AsyncWebServer &server) : m_moduleCount(0), m_server(&server) {
+ESPAdminServer::ESPAdminServer(AsyncWebServer &server) : m_moduleCount(0), m_server(&server), m_resetRequested(false) {
 }
 
 void ESPAdminServer::setup() {
@@ -78,6 +78,11 @@ void ESPAdminServer::setup() {
     request->send(response);
   });
 
+  m_server->on("/api/admin/reset", HTTP_GET, [&](AsyncWebServerRequest *request) {
+    m_resetRequested = true;
+    request->send(200);
+  });
+
   // Modules setup
   for (short i = 0; i < m_moduleCount; i++) {
     m_modules[i]->setup(*m_server);
@@ -85,6 +90,12 @@ void ESPAdminServer::setup() {
 }
 
 void ESPAdminServer::loop() {
+  if (m_resetRequested) {
+    Serial.println("Reset requested");
+    delay(500);
+    ESP.restart();
+  }
+  
   for (short i = 0; i < m_moduleCount; i++) {
     m_modules[i]->loop(*m_server);
   }
