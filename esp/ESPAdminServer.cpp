@@ -40,29 +40,33 @@ void ESPAdminServer::setup() {
     request->send(LittleFS, fileName);
   });
 
-  m_server->on("/api/admin/uploadFile", HTTP_POST, [](AsyncWebServerRequest *request) {
+  m_server->on("/api/admin/uploadFile", HTTP_POST, [&](AsyncWebServerRequest *request) {
+    Serial.print("File upload done");
     request->send(200);
-  }, [](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
-    File file = LittleFS.open(filename, "w");
-    if (!file) {
-      Serial.print("file open failed ");
-      Serial.println(filename);
-      return;
-    }
-
-    /*
+  }, [&](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+    // Start file uploading
     if (!index) {
-      Serial.printf("UploadStart: %s\n", filename.c_str());
-    }*/
+      Serial.print("File upload ");
+      Serial.println(filename);
+      
+      request->_tempFile = LittleFS.open(filename, "w");
+      if (!request->_tempFile) {
+        Serial.print("file open failed ");
+        Serial.println(filename);
+        
+        return;
+      }
+    }
     
     for (size_t i = 0; i < len; i++) {
-      // Serial.write(data[i]);
-      file.write(data[i]);
+      //Serial.write(data[i]);
+      request->_tempFile.write(data[i]);
     }
     
     if (final) {
-      //Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
-      file.close();
+      Serial.printf("UploadEnd: %s, %u B\n", filename.c_str(), index + len);
+      request->_tempFile.close();
+      request->send(200);
     }
   });
 
