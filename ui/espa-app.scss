@@ -7,6 +7,10 @@
 
 mwc-top-app-bar-fixed {
   --mdc-theme-primary: var(--paper-grey-900);
+
+  > * {
+    --mdc-theme-primary: var(--paper-indigo-500);
+  }
 }
 
 .menu-item {
@@ -312,5 +316,7 @@ TODO notification theme, but not supported by mwc-snackbar :(
   --paper-blue-grey-700: #455a64;
   --paper-blue-grey-800: #37474f;
   --paper-blue-grey-900: #263238;
-}
 
+  --mdc-theme-primary: var(--paper-indigo-500);
+  --mdc-theme-on-primary: #FFF;
+}

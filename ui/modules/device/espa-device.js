@@ -5,7 +5,7 @@ import {EspaModule} from '../espa-module';
 import './espa-device-configuration.js';
 
 @customElement('espa-device')
-class EspaDevice extends EspaModule(LitElement) {
+export class EspaDevice extends EspaModule(LitElement) {
   // static styles = style;
 
   render() {

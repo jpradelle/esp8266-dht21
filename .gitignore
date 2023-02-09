@@ -3,5 +3,6 @@ esp/data
 
 ui/node_modules
 ui/dist
+ui/web-types.json
 
 .idea

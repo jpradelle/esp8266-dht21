@@ -5,7 +5,7 @@ import {EspaNotification} from '../../utils/espa-notification.js';
 import {when} from 'lit/directives/when.js';
 
 @customElement('espa-device-configuration')
-class EspaDeviceConfiguration extends LitElement {
+export class EspaDeviceConfiguration extends LitElement {
   static styles = style;
 
   @state()
@@ -16,7 +16,7 @@ class EspaDeviceConfiguration extends LitElement {
 
   render() {
     return html`
-      <espa-page-box title="Configuration">
+      <espa-page-box heading="System configuration">
         <mwc-button @click="${this.__exportConfiguration}" outlined>Export Configuration</mwc-button>
         
         <div class="import">

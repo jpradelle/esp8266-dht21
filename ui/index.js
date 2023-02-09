@@ -5,7 +5,7 @@ import '@material/mwc-button';
 import '@material/mwc-textfield';
 import '@material/mwc-dialog';
 
-import './views/espa-app.js';
+import './espa-app.js';
 import './utils/espa-page-box.js';
 import './utils/form/espa-form.js';
 

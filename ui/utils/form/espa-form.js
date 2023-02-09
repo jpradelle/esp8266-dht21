@@ -2,11 +2,11 @@ import {html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import './espa-form-bind.js';
 import './espa-form-submit.js';
-// import style from './espa-page-box.scss';
+import style from './espa-form.scss';
 
 @customElement('espa-form')
-class EspaForm extends LitElement {
-  // static styles = style;
+export class EspaForm extends LitElement {
+  static styles = style;
 
   @property({type: Object, attribute: false})
   value;

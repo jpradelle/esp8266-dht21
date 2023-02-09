@@ -6,7 +6,7 @@ import '@polymer/app-route/app-route.js';
 import '@material/mwc-snackbar';
 
 @customElement('espa-app')
-class EspaApp extends LitElement {
+export class EspaApp extends LitElement {
   static styles = style;
   
   @state()
@@ -67,7 +67,11 @@ class EspaApp extends LitElement {
       </mwc-drawer>
 
       ${Array.from(this.__notifications.values()).map(notif => html`
-        <mwc-snackbar labelText="${notif.message}" open class="notification ${notif.type}">
+        <mwc-snackbar
+            labelText="${notif.message}"
+            open
+            class="notification ${notif.type}"
+            @MDCSnackbar:closed="${() => this.__notifications.delete(notif)}">
           <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
         </mwc-snackbar>
       `)}

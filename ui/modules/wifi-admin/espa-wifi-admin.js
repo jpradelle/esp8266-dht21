@@ -4,7 +4,7 @@ import {customElement} from 'lit/decorators.js';
 import {EspaModule} from '../espa-module';
 
 @customElement('espa-wifi-admin')
-class EspaWifiAdmin extends EspaModule(LitElement) {
+export class EspaWifiAdmin extends EspaModule(LitElement) {
   // static styles = style;
 
   render() {

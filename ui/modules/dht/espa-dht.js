@@ -6,7 +6,7 @@ import {EspaModule} from '../espa-module';
 import {roundFormatter} from '../../utils/form/espa-form-bind.js';
 
 @customElement('espa-dht')
-class EspaWifiAdmin extends EspaModule(LitElement) {
+export class EspaWifiAdmin extends EspaModule(LitElement) {
   // static styles = style;
 
   @state()
@@ -21,11 +21,11 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
   constructor() {
     super();
 
-    this.__apiCall();
+    this.__readSensorData();
     this.__loadConfiguration();
     setInterval(() => {
-      this.__apiCall();
-    }, 6000);
+      this.__readSensorData();
+    }, 15000);
   }
 
   render() {
@@ -33,7 +33,7 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
       return '';
 
     return html`
-      <espa-page-box>
+      <espa-page-box heading="Sensor data">
         <div>
           Temperature: ${parseFloat(this.__temperature).toFixed(2)} °C
         </div>
@@ -42,8 +42,7 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
         </div>
       </espa-page-box>
       
-      <espa-page-box>
-        Configuration
+      <espa-page-box heading="Sensor configuration">
         ${when(this.__sensorConfiguration, () => html`
           <espa-form .value="${this.__sensorConfiguration}">
             <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
@@ -57,14 +56,6 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
                 .submit="${this.__updateConfiguration}"
                 success-message="Configuration updated"></espa-form-submit>
           </espa-form>
-          
-          <div>
-            Temperature: ${this.__sensorConfiguration.temperatureOffset} °C
-          </div>
-          <div>
-            Humidity: ${this.__sensorConfiguration.humidityOffset} %
-          </div>
-          <mwc-button @click="${this.__updateConfiguration}">Update configuration</mwc-button>
         `, () => html`
           <div>
             Loading
@@ -86,7 +77,7 @@ class EspaWifiAdmin extends EspaModule(LitElement) {
     return 'dht-sensor';
   }
 
-  async __apiCall() {
+  async __readSensorData() {
     const res = await fetch('/api/dht/sensorData');
     const json = await res.json();
     this.__temperature = json.temperature;

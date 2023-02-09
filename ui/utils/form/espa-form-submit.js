@@ -3,7 +3,7 @@ import {customElement, property, state} from 'lit/decorators.js';
 import {EspaNotification} from '../espa-notification.js';
 
 @customElement('espa-form-submit')
-class EspaFormSubmit extends LitElement {
+export class EspaFormSubmit extends LitElement {
   @property({type: Function, attribute: false})
   submit;
 
