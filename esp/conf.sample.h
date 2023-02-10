@@ -24,8 +24,7 @@
 // DHT conf
 #define DHTTYPE DHT21
 #define DHTPIN D4
-
-// Temperature and humidity sampling frequency
-#define INTERVAL 20 * 1000
+#define DHT_INTERVAL 10 * 1000 // Temperature and humidity sampling frequency
+#define FAKE_TEST_DATA false // Don't read DHT sensor, simulate fake data
 
 #endif

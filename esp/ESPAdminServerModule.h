@@ -16,7 +16,7 @@ public:
   ESPAdminServerModule();
   ESPAdminServerModule(const char* configurationFile);
   virtual ~ESPAdminServerModule() {}
-  virtual void setup(AsyncWebServer &server) = 0;
+  virtual void setup(AsyncWebServer &server, WiFiClient &espClient) = 0;
   virtual void loop(AsyncWebServer &server) = 0;
   String getConfigurationFileName();
 };

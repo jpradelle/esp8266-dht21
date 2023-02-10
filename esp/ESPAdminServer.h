@@ -14,7 +14,7 @@ private:
 public:
   ESPAdminServer();
   ESPAdminServer(AsyncWebServer &server);
-  void setup();
+  void setup(WiFiClient &espClient);
   void loop();
   void addModule(ESPAdminServerModule &module);
 };

@@ -38,7 +38,7 @@ yarn flash 192.168.100.212
 Using ArduinoIDE, open esp/esp.ino project
 
 Install needed library on Arduino IDE:
-* https://github.com/contrem/arduino-timer
+* https://github.com/kpfleming/arduino-timer-cpp17
 * https://github.com/adafruit/DHT-sensor-library
 * https://github.com/knolleary/pubsubclient
 * https://github.com/me-no-dev/ESPAsyncWebServer

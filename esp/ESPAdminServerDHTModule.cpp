@@ -1,25 +1,25 @@
 #include "ESPAdminServerDHTModule.h"
 
 #include <LittleFS.h>
+#include "conf.h"
 
-ESPAdminServerDHTModule::ESPAdminServerDHTModule() : ESPAdminServerModule("/conf/dht.json"), m_humidityOffset(0), m_temperatureOffset(0) {
+ESPAdminServerDHTModule::ESPAdminServerDHTModule() :
+    ESPAdminServerModule("/conf/dht.json"),
+    m_dht(0, 0),
+    m_dhtHumidity{-100, -100, -100, -100, -100, -100},
+    m_dhtTemperature{-100, -100, -100, -100, -100, -100} {
   
 }
 
-void ESPAdminServerDHTModule::setup(AsyncWebServer &server) {
+void ESPAdminServerDHTModule::setup(AsyncWebServer &server, WiFiClient &espClient) {
   loadConfiguration();
   
   // Sensor data
   server.on("/api/dht/sensorData", HTTP_GET, [&](AsyncWebServerRequest *request){
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     DynamicJsonDocument jsonBuffer(50);
-    /*
-    jsonBuffer["temperature"] = DHTSensor_getTemperature() + m_temperatureOffset;
-    jsonBuffer["humidity"] = DHTSensor_getHumidity() + m_humidityOffset;
-    /*/
-    jsonBuffer["temperature"] = 20 + m_temperatureOffset;
-    jsonBuffer["humidity"] = 50 + m_humidityOffset;
-    //*/
+    jsonBuffer["temperature"] = computeTemperature();
+    jsonBuffer["humidity"] = computeHumidity();
     serializeJson(jsonBuffer, *response);
     request->send(response);
   });
@@ -50,10 +50,63 @@ void ESPAdminServerDHTModule::setup(AsyncWebServer &server) {
     ESPAdminServerModule::jsonResponse(request, jsonBuffer);
   });
   server.addHandler(handler);
+
+  // DHT Sensor init and timer setup
+  m_dht = DHT(DHTPIN, DHTTYPE);
+  m_dht.begin();
+  m_timer.now_and_every(DHT_INTERVAL, [&]() {
+    #if FAKE_TEST_DATA
+    m_dhtHumidity[m_dhtIndex] = random(40, 60);
+    m_dhtTemperature[m_dhtIndex] = random(18, 22);
+    #else
+    m_dhtHumidity[m_dhtIndex] = m_dht.readHumidity();
+    m_dhtTemperature[m_dhtIndex] = m_dht.readTemperature();
+    #endif
+    
+    m_dhtIndex = (m_dhtIndex + 1) % 6;
+  
+    //char str[50];
+    //snprintf(str, 50, "Humidity: %.2f%%\tTemperature: %.2f°C", computeHumidity(), computeTemperature());
+    //Serial.println(str);
+    
+    return Timers::TimerStatus::repeat;
+  });
+
+  // MQTT config
+  m_mqttClient = PubSubClient(espClient);
+  m_mqttClient.setServer(MQTT_ADDRESS, MQTT_PORT);
+  m_timer.every(MQTT_PUBLISH_INTERVAL, [&]() {
+    if (!m_mqttClient.connected()) {
+      Serial.print("Attempting MQTT connection on ");
+      Serial.print(MQTT_ADDRESS);
+      Serial.print(":");
+      Serial.print(MQTT_PORT);
+      Serial.print(" ... ");
+      // Attempt to connect
+      if (m_mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
+        Serial.println("connected");
+      } else {
+        Serial.print("failed, rc=");
+        Serial.println(m_mqttClient.state());
+      }
+    }
+
+    if (m_mqttClient.connected()) {
+      // Once connected, publish an announcement...
+      char str[50];
+      snprintf(str, 50, "{\"humidity\": %.2f, \"temperature\": %.2f}", computeHumidity(), computeTemperature());
+      Serial.print("MQTT Publish ");
+      Serial.println(str);
+
+      m_mqttClient.publish(MQTT_OUT_TOPIC, str);
+    }
+    
+    return Timers::TimerStatus::repeat;
+  });
 }
 
 void ESPAdminServerDHTModule::loop(AsyncWebServer &server) {
-  
+  m_timer.tick();
 }
 
 bool ESPAdminServerDHTModule::saveConfiguration() {
@@ -73,4 +126,81 @@ bool ESPAdminServerDHTModule::loadConfiguration() {
   m_humidityOffset = jsonDoc["humOffset"];
 
   return true;
+}
+
+
+float ESPAdminServerDHTModule::computeHumidity() {
+  if (m_dhtHumidity[0] == -100)
+    return 50;
+  
+  if (m_dhtHumidity[5] == -100)
+    return m_dhtHumidity[0];
+
+  float value = computeData(m_dhtHumidity) + m_humidityOffset;
+
+  /*
+  Serial.print("Hum: [");
+  for (int i = 0; i < 6; i++) {
+    Serial.print(m_dhtHumidity[i]);
+    Serial.print(", ");
+  }
+  Serial.print("] -> ");
+  Serial.println(value);
+  */
+
+  return value;
+}
+
+float ESPAdminServerDHTModule::computeTemperature() {
+  if (m_dhtTemperature[0] == -100)
+    return 20;
+    
+  if (m_dhtTemperature[5] == -100)
+    return m_dhtTemperature[0];
+
+  float value = computeData(m_dhtTemperature) + m_temperatureOffset;
+
+  /*
+  Serial.print("Temp: [");
+  for (int i = 0; i < 6; i++) {
+    Serial.print(m_dhtTemperature[i]);
+    Serial.print(", ");
+  }
+  Serial.print("] -> ");
+  Serial.println(value);
+  */
+
+  return value;
+}
+
+float ESPAdminServerDHTModule::computeData(float *data) {
+  // Filter out max and min value, compute average of 4 other values
+  short lowestIndex = 0;
+  short highestIndex = 0;
+
+  for (short i = 1; i < 6; i++) {
+    if (data[i] < data[lowestIndex])
+      lowestIndex = i;
+    if (data[i] > data[highestIndex])
+      highestIndex = i;
+  }
+
+  // If all 6 values are the same remove 1st and 2nd
+  if (lowestIndex == 0 && highestIndex == 0)
+    highestIndex = 1;
+
+  /*
+  Serial.print("Filter out lowest ");
+  Serial.print(lowestIndex);
+  Serial.print(" and highest ");
+  Serial.println(highestIndex);
+  */
+
+  float average = 0;
+  for (short i = 0; i < 6; i++) {
+    if (i != lowestIndex && i != highestIndex)
+      average += data[i];
+  }
+
+  return average / 4;
 }

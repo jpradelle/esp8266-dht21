@@ -9,7 +9,7 @@ ESPAdminServer::ESPAdminServer() : m_moduleCount(0), m_server(NULL), m_resetRequ
 ESPAdminServer::ESPAdminServer(AsyncWebServer &server) : m_moduleCount(0), m_server(&server), m_resetRequested(false) {
 }
 
-void ESPAdminServer::setup() {
+void ESPAdminServer::setup(WiFiClient &espClient) {
   // UI content
   m_server->on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html.gz", "text/html");
@@ -89,7 +89,7 @@ void ESPAdminServer::setup() {
 
   // Modules setup
   for (short i = 0; i < m_moduleCount; i++) {
-    m_modules[i]->setup(*m_server);
+    m_modules[i]->setup(*m_server, espClient);
   }
 }
 
