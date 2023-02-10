@@ -1,6 +1,7 @@
 import {html, LitElement} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import {when} from 'lit/directives/when.js';
+import {guard} from 'lit/directives/guard.js';
 // import style from './espa-wifi-admin.scss';
 import {EspaModule} from '../espa-module';
 import {roundFormatter} from '../../utils/form/espa-form-bind.js';
@@ -44,7 +45,7 @@ export class EspaWifiAdmin extends EspaModule(LitElement) {
       
       <espa-page-box heading="Sensor configuration">
         ${when(this.__sensorConfiguration, () => html`
-          <espa-form .value="${this.__sensorConfiguration}">
+          <espa-form .value="${guard([this.__sensorConfiguration], () => this.__sensorConfiguration)}">
             <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
               <mwc-textfield label="Temperature Offset"></mwc-textfield>
             </espa-form-bind>
