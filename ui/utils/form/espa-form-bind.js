@@ -1,10 +1,13 @@
 import {html, LitElement} from 'lit';
 import {customElement, property, queryAssignedElements} from 'lit/decorators.js';
+import style from './espa-form-bind.scss';
 
 export const roundFormatter = decimal => value => parseFloat(value).toFixed(decimal);
 
 @customElement('espa-form-bind')
 export class EspaFormBind extends LitElement {
+  static styles = [style];
+
   @property()
   name;
 
@@ -92,5 +95,12 @@ export class EspaFormBind extends LitElement {
     } else {
       this.element = null;
     }
+  }
+
+  reportValidity() {
+    if (this.element.reportValidity)
+      return this.element.reportValidity();
+
+    return true;
   }
 }

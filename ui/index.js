@@ -8,6 +8,7 @@ import '@material/mwc-dialog';
 import './espa-app.js';
 import './utils/espa-page-box.js';
 import './utils/form/espa-form.js';
+import './utils/form/espa-checkbox.js';
 
 import './modules/wifi-admin/espa-wifi-admin.js';
 import './modules/device/espa-device.js';

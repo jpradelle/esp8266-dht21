@@ -507,6 +507,19 @@
     "@material/feature-targeting" "14.0.0-canary.53b3cad2f.0"
     "@material/rtl" "14.0.0-canary.53b3cad2f.0"
 
+"@material/form-field@=14.0.0-canary.53b3cad2f.0":
+  version "14.0.0-canary.53b3cad2f.0"
+  resolved "https://registry.yarnpkg.com/@material/form-field/-/form-field-14.0.0-canary.53b3cad2f.0.tgz#5775adc459ddbb0de9ff564faf7a5dc403b9bbc7"
+  integrity sha512-h9jFm9f5WeMHJWGpQsZ9sPrERLGcDQdW8uvbHAHZ/zN35Mqj43s8+alXROiibx+m1oHLvf2Z01pPWtFSXLYzxA==
+  dependencies:
+    "@material/base" "14.0.0-canary.53b3cad2f.0"
+    "@material/feature-targeting" "14.0.0-canary.53b3cad2f.0"
+    "@material/ripple" "14.0.0-canary.53b3cad2f.0"
+    "@material/rtl" "14.0.0-canary.53b3cad2f.0"
+    "@material/theme" "14.0.0-canary.53b3cad2f.0"
+    "@material/typography" "14.0.0-canary.53b3cad2f.0"
+    tslib "^2.1.0"
+
 "@material/icon-button@14.0.0-canary.53b3cad2f.0":
   version "14.0.0-canary.53b3cad2f.0"
   resolved "https://registry.yarnpkg.com/@material/icon-button/-/icon-button-14.0.0-canary.53b3cad2f.0.tgz#396e91458530676da8e320cea7b1e15cfa65715e"
@@ -571,6 +584,16 @@
     lit "^2.0.0"
     tslib "^2.0.1"
 
+"@material/mwc-checkbox@^0.27.0":
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/@material/mwc-checkbox/-/mwc-checkbox-0.27.0.tgz#a299252df96045e9c37a67ff0d5c3f3469f27ae4"
+  integrity sha512-EY0iYZLwo8qaqMwR5da4fdn0xI0BZNAvKTcwoubYWpDDHlGxDcqwvjp/40ChGo3Q/zv8/4/A0Qp7cwapI82EkA==
+  dependencies:
+    "@material/mwc-base" "^0.27.0"
+    "@material/mwc-ripple" "^0.27.0"
+    lit "^2.0.0"
+    tslib "^2.0.1"
+
 "@material/mwc-dialog@^0.27.0":
   version "0.27.0"
   resolved "https://registry.yarnpkg.com/@material/mwc-dialog/-/mwc-dialog-0.27.0.tgz#9dca4b5bdd9efc380bd48de2d09629e40741403d"
@@ -603,6 +626,16 @@
   integrity sha512-uLleloTxQ6dDShcZzqgqfC8otQY8DtGMO9HFQbAEncoFAWpAehcEonsuT/IUhMORN+c5un0P5WXwcZsInJb7og==
   dependencies:
     "@material/floating-label" "=14.0.0-canary.53b3cad2f.0"
+    lit "^2.0.0"
+    tslib "^2.0.1"
+
+"@material/mwc-formfield@^0.27.0":
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/@material/mwc-formfield/-/mwc-formfield-0.27.0.tgz#2a6d60f4324b4928ffbaccfe54086a48283d299e"
+  integrity sha512-XGZtC1MTyGQ8b2osnaygGzS3qe2QvlWfXZepcFs9i6MW+b6VimQQ4c/KsKIF7dHmeY6N0o4k9pAZ086EGesXOQ==
+  dependencies:
+    "@material/form-field" "=14.0.0-canary.53b3cad2f.0"
+    "@material/mwc-base" "^0.27.0"
     lit "^2.0.0"
     tslib "^2.0.1"
 

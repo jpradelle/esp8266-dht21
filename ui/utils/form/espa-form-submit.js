@@ -34,6 +34,11 @@ export class EspaFormSubmit extends LitElement {
   }
 
   async __submitClicked() {
+    if (!this.form.reportValidity()) {
+      EspaNotification.error(this, 'Please fix form issues');
+      return false;
+    }
+
     this.__submitting = true;
     try {
       const res = await this.submit(this.form.value);
@@ -47,6 +52,5 @@ export class EspaFormSubmit extends LitElement {
     }
 
     this.__submitting = false;
-
   }
 }

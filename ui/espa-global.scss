@@ -1,0 +1,16 @@
+espa-form,
+.espa-form {
+  espa-form-bind {
+    flex: 1;
+
+    & > mwc-textfield {
+      width: 100%;
+    }
+  }
+
+  .line {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}

@@ -62,7 +62,8 @@ export class EspaForm extends LitElement {
     if (changedProperties.has('value')) {
       this.__registeredElements.forEach(element => {
         const value = this.get(this.value, element.name);
-        element.setValue(value);
+        if (value !== undefined)
+          element.setValue(value);
       });
 
       this.dispatchEvent(new CustomEvent('value-changed', {
@@ -106,5 +107,11 @@ export class EspaForm extends LitElement {
       // Simple property set
       prop[path] = value;
     }
+  }
+
+  reportValidity() {
+    return Array.from(this.__registeredElements.values())
+        .map(input => input.reportValidity())
+        .every(state => state);
   }
 }
