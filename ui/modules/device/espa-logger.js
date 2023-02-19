@@ -9,6 +9,9 @@ export class EspaLogger extends LitElement {
   @state()
   __logs = [];
 
+  @state()
+  __autoScroll = true;
+
   constructor() {
     super();
 
@@ -16,27 +19,41 @@ export class EspaLogger extends LitElement {
   }
 
   render() {
+    this.updateComplete.then(() => this.__updateScroll());
     return html`
-      <pre>
-        ${this.__logs}
-      </pre>
+      <espa-checkbox ?value="${this.__autoScroll}" @change="${this.__autoScrollChange}" label="Auto scroll"></espa-checkbox>
+      <pre id="logs">${this.__logs}</pre>
     `;
   }
 
   async __init() {
-    console.log('Trying to open a WebSocket connection...');
+    this.__logs.push('[UI] Trying to open a WebSocket connection...\n');
+    this.requestUpdate();
+
     const websocket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/wsApi/log`);
     websocket.onopen = (event) => {
-      console.log('Connection opened');
+      this.__logs.push('[UI] Connection opened\n');
+      this.requestUpdate();
     };
     websocket.onclose = (event) => {
-      console.log('Connection closed');
+      this.__logs.push('[UI] Connection closed\n');
+      this.requestUpdate();
       setTimeout(() => this.__init(), 2000);
     };
     websocket.onmessage = (event) => {
-      console.log(event.data);
       this.__logs.push(event.data);
       this.requestUpdate();
     };
+  }
+
+  __autoScrollChange(e) {
+    this.__autoScroll = e.target.value;
+  }
+
+  __updateScroll() {
+    if (this.__autoScroll) {
+      const logs = this.shadowRoot.querySelector('#logs');
+      logs.scrollTop = logs.scrollHeight;
+    }
   }
 }

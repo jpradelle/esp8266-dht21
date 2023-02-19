@@ -90,8 +90,7 @@ void ESPAdminServerDHTModule::setup(AsyncWebServer &server, WiFiClient &espClien
       if (m_mqttClient->connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
         m_logger->println("connected");
       } else {
-        Serial.print("failed, rc=");
-        m_logger->println(m_mqttClient->state());
+        m_logger->println("failed, rc=" + String(m_mqttClient->state()));
       }
     }
 

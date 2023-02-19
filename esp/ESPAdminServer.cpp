@@ -117,7 +117,7 @@ void ESPAdminServer::loop() {
     ESP.restart();
   }
 
-  //m_logWs->cleanupClients();
+  m_logWs->cleanupClients();
   
   for (short i = 0; i < m_moduleCount; i++) {
     m_modules[i]->loop(*m_server, this);
