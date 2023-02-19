@@ -5,13 +5,23 @@
 
 ESPAdminServerDHTModule::ESPAdminServerDHTModule() :
     ESPAdminServerModule("/conf/dht.json"),
-    m_dht(0, 0),
+    m_dht(NULL),
+    m_mqttClient(NULL),
     m_dhtHumidity{-100, -100, -100, -100, -100, -100},
-    m_dhtTemperature{-100, -100, -100, -100, -100, -100} {
+    m_dhtTemperature{-100, -100, -100, -100, -100, -100},
+    m_logger(NULL) {
   
 }
 
-void ESPAdminServerDHTModule::setup(AsyncWebServer &server, WiFiClient &espClient) {
+ESPAdminServerDHTModule::~ESPAdminServerDHTModule() {
+  if (m_dht != NULL)
+    delete m_dht;
+  if (m_mqttClient != NULL)
+    delete m_mqttClient;
+}
+
+void ESPAdminServerDHTModule::setup(AsyncWebServer &server, WiFiClient &espClient, ESPAdminServer *adminServer) {
+  m_logger = adminServer->getLogger();
   loadConfiguration();
   
   // Sensor data
@@ -52,60 +62,53 @@ void ESPAdminServerDHTModule::setup(AsyncWebServer &server, WiFiClient &espClien
   server.addHandler(handler);
 
   // DHT Sensor init and timer setup
-  m_dht = DHT(DHTPIN, DHTTYPE);
-  m_dht.begin();
+  m_dht = new DHT(DHTPIN, DHTTYPE);
+  m_dht->begin();
   m_timer.now_and_every(DHT_INTERVAL, [&]() {
     #if FAKE_TEST_DATA
     m_dhtHumidity[m_dhtIndex] = random(40, 60);
     m_dhtTemperature[m_dhtIndex] = random(18, 22);
     #else
-    m_dhtHumidity[m_dhtIndex] = m_dht.readHumidity();
-    m_dhtTemperature[m_dhtIndex] = m_dht.readTemperature();
+    m_dhtHumidity[m_dhtIndex] = m_dht->readHumidity();
+    m_dhtTemperature[m_dhtIndex] = m_dht->readTemperature();
     #endif
+
+    m_logger->println("[DHT] raw measure: " + String(m_dhtTemperature[m_dhtIndex]) + "°C, " + String(m_dhtHumidity[m_dhtIndex]) + "%");
     
     m_dhtIndex = (m_dhtIndex + 1) % 6;
-  
-    //char str[50];
-    //snprintf(str, 50, "Humidity: %.2f%%\tTemperature: %.2f°C", computeHumidity(), computeTemperature());
-    //Serial.println(str);
     
     return Timers::TimerStatus::repeat;
   });
 
   // MQTT config
-  m_mqttClient = PubSubClient(espClient);
-  m_mqttClient.setServer(MQTT_ADDRESS, MQTT_PORT);
+  m_mqttClient = new PubSubClient(espClient);
+  m_mqttClient->setServer(MQTT_ADDRESS, MQTT_PORT);
   m_timer.every(MQTT_PUBLISH_INTERVAL, [&]() {
-    if (!m_mqttClient.connected()) {
-      Serial.print("Attempting MQTT connection on ");
-      Serial.print(MQTT_ADDRESS);
-      Serial.print(":");
-      Serial.print(MQTT_PORT);
-      Serial.print(" ... ");
+    if (!m_mqttClient->connected()) {
+      m_logger->print("[DHT] Attempting MQTT connection on " + String(MQTT_ADDRESS) + ":" + String(MQTT_PORT) + " ... ");
       // Attempt to connect
-      if (m_mqttClient.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
-        Serial.println("connected");
+      if (m_mqttClient->connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD)) {
+        m_logger->println("connected");
       } else {
         Serial.print("failed, rc=");
-        Serial.println(m_mqttClient.state());
+        m_logger->println(m_mqttClient->state());
       }
     }
 
-    if (m_mqttClient.connected()) {
+    if (m_mqttClient->connected()) {
       // Once connected, publish an announcement...
       char str[50];
       snprintf(str, 50, "{\"humidity\": %.2f, \"temperature\": %.2f}", computeHumidity(), computeTemperature());
-      Serial.print("MQTT Publish ");
-      Serial.println(str);
+      m_logger->println("[DHT] MQTT Publish " + String(str));
 
-      m_mqttClient.publish(MQTT_OUT_TOPIC, str);
+      m_mqttClient->publish(MQTT_OUT_TOPIC, str);
     }
     
     return Timers::TimerStatus::repeat;
   });
 }
 
-void ESPAdminServerDHTModule::loop(AsyncWebServer &server) {
+void ESPAdminServerDHTModule::loop(AsyncWebServer &server, ESPAdminServer *adminServer) {
   m_timer.tick();
 }
 

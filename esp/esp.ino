@@ -14,7 +14,7 @@
 AsyncWebServer server(80);
 
 WiFiClient espClient;
-ESPAdminServer espAdminServer;
+ESPAdminServer espAdminServer(server);
 ESPAdminServerDHTModule dhtModule;
 
 bool wifiConnect() {
@@ -61,7 +61,6 @@ void setup() {
   
   ArduinoOTA.begin();
 
-  espAdminServer = ESPAdminServer(server);
   espAdminServer.addModule(dhtModule);
   espAdminServer.setup(espClient);
 

@@ -4,6 +4,7 @@ import {customElement, state} from 'lit/decorators.js';
 import {EspaModule} from '../espa-module';
 import './espa-device-configuration.js';
 import './espa-file-system.js';
+import './espa-logger.js';
 
 @customElement('espa-device')
 export class EspaDevice extends EspaModule(LitElement) {
@@ -20,6 +21,9 @@ export class EspaDevice extends EspaModule(LitElement) {
         </espa-expansion-panel>
         <espa-expansion-panel heading="File system">
           <espa-file-system></espa-file-system>
+        </espa-expansion-panel>
+        <espa-expansion-panel heading="Logs">
+          <espa-logger></espa-logger>
         </espa-expansion-panel>
       </esp-expansion-group>
     `;

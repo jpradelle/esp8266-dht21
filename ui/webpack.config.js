@@ -3,10 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 
-const apiAddress = process.env.API_ADDRESS;
+let apiAddress = process.env.API_ADDRESS;
 if (!apiAddress) {
-  console.error('Missing environment API_ADDRESS');
-  process.exit(1);
+  console.error('Missing environment API_ADDRESS, using default 127.0.0.1:8080');
+  apiAddress = '127.0.0.1:8080';
 }
 console.log("Using proxy to API on address " + apiAddress);
 
@@ -96,7 +96,11 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/api': apiAddress // 'http://192.168.100.212'
+      '/api': 'http://' + apiAddress,
+      '/wsApi': {
+        target: 'ws://' + apiAddress,
+        ws: true
+      }
     }
   }
 };

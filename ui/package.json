@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development",
-    "dev-mocked": "API_ADDRESS='http://127.0.0.1:3000' yarn dev",
+    "dev-mocked": "API_ADDRESS='127.0.0.1:3000' yarn dev",
     "json-mock": "mock-json-server ./scripts/db-mock.json --port=3000",
     "build": "webpack --mode production",
     "flash": "node scripts/esp-flash.mjs",
