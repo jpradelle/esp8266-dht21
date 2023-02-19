@@ -41,7 +41,7 @@ export class EspaApp extends LitElement {
 
   render() {
     return html`
-      <app-location @route-changed="${this.__routeChanged}" use-hash-as-path></app-location>
+      <app-location @route-changed="${this.__routeChanged}" use-hash-as-path url-space-regex="^#.*$"></app-location>
       <app-route
           .route="${this.__route}"
           pattern="/:module"

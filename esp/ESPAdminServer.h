@@ -24,6 +24,7 @@ public:
   void loop();
   void addModule(ESPAdminServerModule &module);
   Logger* getLogger();
+  void fillJsonFiles(Dir& dir, String path, JsonArray& arrayBuffer);
 };
 
 #endif

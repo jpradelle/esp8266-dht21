@@ -43,7 +43,7 @@ void ESPAdminServer::setup(WiFiClient &espClient) {
   });
 
   m_server->on("/api/admin/uploadFile", HTTP_POST, [&](AsyncWebServerRequest *request) {
-    request->send(200);
+    request->send(200, "application/json", "{\"success\": true}");
   }, [&](AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
     // Start file uploading
     if (!index) {
@@ -65,8 +65,21 @@ void ESPAdminServer::setup(WiFiClient &espClient) {
     if (final) {
       request->_tempFile.close();
       m_logger.println("[200] /api/admin/uploadFile file uploaded " + filename + " " + (index + len) + " B");
-      request->send(200);
     }
+  });
+  
+  m_server->on("/api/admin/deleteFile", HTTP_POST, [&](AsyncWebServerRequest *request) {
+    if (!request->hasParam("file", true)) {
+      m_logger.println("[404] /api/admin/deleteFile Missing file parameter");
+      request->send(404, "text/plain", "Missing file parameter");
+      return;
+    }
+
+    String fileName = request->getParam("file", true)->value();
+    LittleFS.remove(fileName);
+    m_logger.println("[200] /api/admin/deleteFile of file " + fileName);
+    
+    request->send(200, "application/json", "{\"success\": true}");
   });
 
   m_server->on("/api/admin/getConfigurations", HTTP_GET, [&](AsyncWebServerRequest *request) {
@@ -82,12 +95,34 @@ void ESPAdminServer::setup(WiFiClient &espClient) {
     request->send(response);
   });
 
+  m_server->on("/api/admin/getFileSystemInfo", HTTP_GET, [&](AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("application/json");
+    DynamicJsonDocument jsonBuffer(10240);
+
+    FSInfo fsInfo;
+    LittleFS.info(fsInfo);
+    jsonBuffer["totalSize"] = fsInfo.totalBytes;
+    jsonBuffer["freeSpace"] = fsInfo.totalBytes - fsInfo.usedBytes;
+    JsonArray files = jsonBuffer.createNestedArray("files");
+    /*for (short i = 0; i < m_moduleCount; i++) {
+      if (m_modules[i]->getConfigurationFileName() != NULL)
+        files.add(m_modules[i]->getConfigurationFileName());
+    }*/
+    Dir dir = LittleFS.openDir("/");
+    fillJsonFiles(dir, "", files);
+    
+    serializeJson(jsonBuffer, *response);
+    m_logger.println("[200] /api/admin/getFileSystemInfo");
+    request->send(response);
+  });
+
   m_server->on("/api/admin/reset", HTTP_GET, [&](AsyncWebServerRequest *request) {
     m_resetRequested = true;
     m_logger.println("[200] /api/admin/reset");
     request->send(200);
   });
 
+  // Web socket
   m_logWs->onEvent([&](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
     switch (type) {
       case WS_EVT_CONNECT:
@@ -135,5 +170,18 @@ void ESPAdminServer::addModule(ESPAdminServerModule &module) {
 
 Logger* ESPAdminServer::getLogger() {
   return &m_logger;
+}
+
+void ESPAdminServer::fillJsonFiles(Dir& dir, String path, JsonArray& arrayBuffer) {
+  while (dir.next()) {
+    if (dir.isFile()) {
+      JsonObject fileDesc = arrayBuffer.createNestedObject();
+      fileDesc["file"] = path + "/" + dir.fileName();
+      fileDesc["size"] = dir.fileSize();
+    } else if (dir.isDirectory()) {
+      Dir subDir = LittleFS.openDir(path + "/" + dir.fileName());
+      fillJsonFiles(subDir, path + "/" + dir.fileName(), arrayBuffer);
+    }
+  }
 }
   

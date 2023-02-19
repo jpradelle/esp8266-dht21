@@ -38,7 +38,7 @@ export class EspaFileSystem extends LitElement {
               <div class="file-row">
                 <a href="/api/admin/getFile?file=${file.file}">${file.file}</a>
                 <span class="size">${this.__humanFileSize(file.size)}</span>
-                <mwc-icon-button icon="delete" class="icon delete" @click="${() => this.__deleteFile(file)}"></mwc-icon-button>
+                <mwc-icon-button icon="delete" class="icon delete" @click="${() => this.__deleteFile(file.file)}"></mwc-icon-button>
               </div>
             `)}
           </div>
@@ -62,12 +62,11 @@ export class EspaFileSystem extends LitElement {
 
   async __deleteFile(file) {
     if (window.confirm('Are you sure to delete file ' + file + ' ?')) {
+      const formData = new URLSearchParams();
+      formData.append('file', file);
       const res = await fetch('/api/admin/deleteFile', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({file})
+        body: formData
       });
 
       const successRes = await res.json();
