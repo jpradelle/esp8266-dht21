@@ -1,6 +1,7 @@
 #include "ESPAdminServer.h"
 #include <cstddef>
 #include <LittleFS.h>
+#include <Updater.h>
 
 ESPAdminServer::ESPAdminServer(AsyncWebServer &server) : m_moduleCount(0), m_server(&server), m_resetRequested(false) {
   m_logWs = new AsyncWebSocket("/wsApi/log");
@@ -121,6 +122,42 @@ void ESPAdminServer::setup(WiFiClient &espClient) {
     m_logger.println("[200] /api/admin/reset");
     request->send(200);
   });
+  
+  m_server->on(
+      "/api/admin/updateFirmware",
+      HTTP_POST,
+      [](AsyncWebServerRequest *request) {},
+      [&](AsyncWebServerRequest *request, const String& filename, size_t index, uint8_t *data, size_t len, bool final) {
+        if (!index) {
+          m_logger.println("Update firmware requested " + filename);
+          size_t contentLen = request->contentLength();
+          Update.runAsync(true);
+          if (!Update.begin(contentLen, U_FLASH)) {
+            m_logger.println(Update.getErrorString());
+          }
+        }
+      
+        if (Update.write(data, len) != len) {
+          m_logger.println(Update.getErrorString());
+        } else {
+          m_logger.println("Firmware update progress " + String((Update.progress() * 100) / Update.size()));
+        }
+      
+        if (final) {
+          AsyncWebServerResponse *response = request->beginResponse(302, "text/plain", "Please wait while the device reboots");
+          response->addHeader("Refresh", "20");
+          response->addHeader("Location", "/");
+          request->send(response);
+          
+          if (!Update.end(true)){
+            m_logger.println(Update.getErrorString());
+          } else {
+            m_logger.println("Firmware update complete, rebooting ...");
+            m_resetRequested = true;
+          }
+        }
+      }
+  );
 
   // Web socket
   m_logWs->onEvent([&](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
@@ -184,4 +221,3 @@ void ESPAdminServer::fillJsonFiles(Dir& dir, String path, JsonArray& arrayBuffer
     }
   }
 }
-  

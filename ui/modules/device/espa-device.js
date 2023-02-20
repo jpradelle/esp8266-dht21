@@ -5,6 +5,7 @@ import {EspaModule} from '../espa-module';
 import './espa-device-configuration.js';
 import './espa-file-system.js';
 import './espa-logger.js';
+import './espa-firmware.js';
 
 @customElement('espa-device')
 export class EspaDevice extends EspaModule(LitElement) {
@@ -24,6 +25,9 @@ export class EspaDevice extends EspaModule(LitElement) {
         </espa-expansion-panel>
         <espa-expansion-panel heading="Logs">
           <espa-logger></espa-logger>
+        </espa-expansion-panel>
+        <espa-expansion-panel heading="Firmware">
+          <espa-firmware></espa-firmware>
         </espa-expansion-panel>
       </esp-expansion-group>
     `;
