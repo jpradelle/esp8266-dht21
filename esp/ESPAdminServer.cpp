@@ -66,6 +66,7 @@ void ESPAdminServer::setup(WiFiClient &espClient) {
     if (final) {
       request->_tempFile.close();
       m_logger.println("[200] /api/admin/uploadFile file uploaded " + filename + " " + (index + len) + " B");
+      request->send(200);
     }
   });
   
