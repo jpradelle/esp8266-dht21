@@ -6,7 +6,9 @@ import '@material/mwc-textfield';
 import '@material/mwc-dialog';
 
 import './espa-app.js';
-import './utils/espa-page-box.js';
+import './utils/box/espa-page-box.js';
+import './utils/box/espa-expansion-group.js';
+import './utils/box/espa-expansion-panel.js';
 import './utils/form/espa-form.js';
 import './utils/form/espa-checkbox.js';
 

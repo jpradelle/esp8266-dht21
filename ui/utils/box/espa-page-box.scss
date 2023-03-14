@@ -1,0 +1,31 @@
+@use "@material/elevation";
+
+:host {
+  display: block;
+  margin: 16px;
+  @include elevation.elevation(1);
+  background-color: #FFF;
+  border-radius: 4px;
+
+  .content-margin-collapse {
+    padding: 0.05px; // Use this to disable margin collapse
+  }
+
+  .title {
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+  }
+
+  .content {
+    margin: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    margin: 16px 8px;
+  }
+}
+

@@ -12,11 +12,15 @@ export class EspaPageBox extends LitElement {
 
   render() {
     return html`
-      <div class="mdc-elevation--2 box">
-        ${when(this.heading, () => html`
-          <h3 class="title">${this.heading}</h3>
-        `)}
-        <slot></slot>
+      <div class="content-margin-collapse">
+        <div class="box">
+          ${when(this.heading, () => html`
+            <div class="title">${this.heading}</div>
+          `)}
+          <div class="content">
+            <slot></slot>
+          </div>
+        </div>
       </div>
     `;
   }

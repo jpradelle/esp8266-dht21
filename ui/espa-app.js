@@ -71,7 +71,7 @@ export class EspaApp extends LitElement {
             labelText="${notif.message}"
             open
             class="notification ${notif.type}"
-            @MDCSnackbar:closed="${() => this.__notifications.delete(notif)}">
+            @MDCSnackbar:closed="${() => this.__notificationClosed(notif)}">
           <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button>
         </mwc-snackbar>
       `)}
@@ -119,5 +119,10 @@ export class EspaApp extends LitElement {
       data: {...e.target.data},
       tail: {...e.target.tail}
     };
+  }
+
+  __notificationClosed(notif) {
+    this.__notifications.delete(notif);
+    this.requestUpdate();
   }
 }

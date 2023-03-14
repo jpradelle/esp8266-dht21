@@ -34,17 +34,18 @@ export class EspaWifiAdmin extends EspaModule(LitElement) {
       return '';
 
     return html`
-      <espa-page-box heading="Sensor data">
-        <div>
-          Temperature: ${parseFloat(this.__temperature).toFixed(2)} °C
-        </div>
-        <div>
-          Humidity: ${parseFloat(this.__humidity).toFixed(2)} %
-        </div>
-      </espa-page-box>
-      
-      <espa-page-box heading="Sensor configuration">
-        ${when(this.__sensorConfiguration, () => html`
+      <esp-expansion-group>
+        <espa-expansion-panel heading="Sensor data" opened>
+          <div>
+            Temperature: ${parseFloat(this.__temperature).toFixed(2)} °C
+          </div>
+          <div>
+            Humidity: ${parseFloat(this.__humidity).toFixed(2)} %
+          </div>
+        </espa-expansion-panel>
+
+        <espa-expansion-panel heading="Sensor configuration">
+          ${when(this.__sensorConfiguration, () => html`
           <espa-form .value="${this.__sensorConfiguration}" @value-changed="${this.__formValueChanged}">
             <div class="line">
               <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
@@ -99,7 +100,8 @@ export class EspaWifiAdmin extends EspaModule(LitElement) {
             Loading
           </div>
         `)}
-      </espa-page-box>
+        </espa-expansion-panel>
+      </esp-expansion-group>
     `;
   }
 

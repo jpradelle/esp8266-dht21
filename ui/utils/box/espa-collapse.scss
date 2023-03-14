@@ -1,0 +1,5 @@
+:host {
+  #container {
+    transition: max-height var(--espa-collapse-animation-time, .3s) ease-out;
+  }
+}

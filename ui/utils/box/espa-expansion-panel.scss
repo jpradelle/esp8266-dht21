@@ -1,0 +1,57 @@
+@use "@material/elevation";
+
+:host {
+  display: block;
+  @include elevation.elevation(1);
+  border-radius: 4px;
+  margin: 16px auto;
+  background-color: #FFF;
+
+  .content-margin-collapse {
+    padding: 0.05px; // Use this to disable margin collapse
+  }
+
+  .panel-top {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background-color: var(--paper-grey-200);
+    }
+
+    &:focus {
+      background-color: var(--paper-grey-200);
+      outline: none;
+    }
+
+    .title-content {
+      flex: 1;
+
+      .panel-title {
+        font-weight: bold;
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+      }
+    }
+
+    .icon {
+      color: var(--paper-grey-500);
+      transition: transform .2s;
+      float: right;
+      --mdc-icon-size: 24px;
+      width: 24px;
+      height: 24px;
+
+      &.opened {
+        transform: rotate(180deg);
+      }
+   }
+  }
+
+  .panel-content {
+    margin: 10px;
+  }
+}
