@@ -36,7 +36,8 @@ export class EspaFileSystem extends LitElement {
             
             ${this.__fileSystemInfo.files.map(file => html`
               <div class="file-row">
-                <a href="/api/admin/getFile?file=${file}">${file}</a>
+                <a href="/api/admin/getFile?file=${file.file}">${file.file}</a>
+                <span class="size">${this.__humanFileSize(file.size)}</span>
                 <mwc-icon-button icon="delete" class="icon delete" @click="${() => this.__deleteFile(file)}"></mwc-icon-button>
               </div>
             `)}

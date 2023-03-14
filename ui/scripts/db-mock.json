@@ -24,9 +24,9 @@
       "totalSize": "2097152",
       "freeSpace": "250000",
       "files": [
-        "/foo.js",
-        "/bar.css",
-        "/conf/baz.json"
+        {"file": "/foo.js", "size":  12345},
+        {"file": "/bar.css", "size":  12345},
+        {"file": "/conf/baz.json", "size":  12345}
       ]
     }
   },
