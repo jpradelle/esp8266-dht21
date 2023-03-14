@@ -16,14 +16,12 @@ export class EspaDeviceConfiguration extends LitElement {
 
   render() {
     return html`
-      <espa-page-box heading="System configuration">
-        <mwc-button @click="${this.__exportConfiguration}" outlined>Export Configuration</mwc-button>
-        
-        <div class="import">
-          <input type="file" name="configurationFile"/>
-          <mwc-button @click="${this.__importConfiguration}" outlined>Import Configuration</mwc-button>
-        </div>
-      </espa-page-box>
+      <mwc-button @click="${this.__exportConfiguration}" outlined>Export Configuration</mwc-button>
+      
+      <div class="import">
+        <input type="file" name="configurationFile"/>
+        <mwc-button @click="${this.__importConfiguration}" outlined>Import Configuration</mwc-button>
+      </div>
       
       ${when(this.__reloadDialogOpen, () => html`
         <mwc-dialog open escapeKeyAction="" scrimClickAction="">

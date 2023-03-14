@@ -18,5 +18,26 @@
     "post": {
       "success": true
     }
+  },
+  "/api/admin/getFileSystemInfo": {
+    "get": {
+      "totalSize": "2097152",
+      "freeSpace": "250000",
+      "files": [
+        "/foo.js",
+        "/bar.css",
+        "/conf/baz.json"
+      ]
+    }
+  },
+  "/api/admin/deleteFile": {
+    "post": {
+      "success": true
+    }
+  },
+  "/api/admin/uploadFile": {
+    "post": {
+      "success": true
+    }
   }
 }

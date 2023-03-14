@@ -46,60 +46,60 @@ export class EspaWifiAdmin extends EspaModule(LitElement) {
 
         <espa-expansion-panel heading="Sensor configuration">
           ${when(this.__sensorConfiguration, () => html`
-          <espa-form .value="${this.__sensorConfiguration}" @value-changed="${this.__formValueChanged}">
-            <div class="line">
-              <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
-                <mwc-textfield label="Temperature Offset"></mwc-textfield>
-              </espa-form-bind>
-              <espa-form-bind name="humidityOffset" type="float" .formatter="${roundFormatter(2)}">
-                <mwc-textfield label="Humidity Offset"></mwc-textfield>
-              </espa-form-bind>
+            <espa-form .value="${this.__sensorConfiguration}" @value-changed="${this.__formValueChanged}">
+              <div class="line">
+                <espa-form-bind name="temperatureOffset" type="float" .formatter="${roundFormatter(2)}">
+                  <mwc-textfield label="Temperature Offset"></mwc-textfield>
+                </espa-form-bind>
+                <espa-form-bind name="humidityOffset" type="float" .formatter="${roundFormatter(2)}">
+                  <mwc-textfield label="Humidity Offset"></mwc-textfield>
+                </espa-form-bind>
+              </div>
+              
+              <div class="line">
+                <espa-form-bind name="mqttEnabled">
+                  <espa-checkbox label="Enable MQTT"></espa-checkbox>
+                </espa-form-bind>
+              </div>
+              <div class="line">
+                <espa-form-bind name="mqttAddress">
+                  <mwc-textfield label="MQTT Address" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
+                </espa-form-bind>
+                <espa-form-bind name="mqttPort" type="int">
+                  <mwc-textfield
+                      label="MQTT Port"
+                      ?disabled="${!this.__sensorConfiguration.mqttEnabled}"
+                      required
+                      type="number"></mwc-textfield>
+                </espa-form-bind>
+                <espa-form-bind name="mqttUser">
+                  <mwc-textfield label="MQTT User" ?disabled="${!this.__sensorConfiguration.mqttEnabled}"></mwc-textfield>
+                </espa-form-bind>
+                <espa-form-bind name="mqttPassword">
+                  <mwc-textfield label="MQTT Password" ?disabled="${!this.__sensorConfiguration.mqttEnabled}"></mwc-textfield>
+                </espa-form-bind>
+              </div>
+              <div class="line">
+                <espa-form-bind name="mqttClientId">
+                  <mwc-textfield label="MQTT Client ID" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
+                </espa-form-bind>
+                <espa-form-bind name="mqttTopic">
+                  <mwc-textfield label="MQTT Topic" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
+                </espa-form-bind>
+              </div>
+              
+              ${JSON.stringify(this.__sensorConfiguration)}
+              
+              <espa-form-submit
+                  slot="buttons"
+                  .submit="${this.__updateConfiguration}"
+                  success-message="Configuration updated"></espa-form-submit>
+            </espa-form>
+          `, () => html`
+            <div>
+              Loading
             </div>
-            
-            <div class="line">
-              <espa-form-bind name="mqttEnabled">
-                <espa-checkbox label="Enable MQTT"></espa-checkbox>
-              </espa-form-bind>
-            </div>
-            <div class="line">
-              <espa-form-bind name="mqttAddress">
-                <mwc-textfield label="MQTT Address" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
-              </espa-form-bind>
-              <espa-form-bind name="mqttPort" type="int">
-                <mwc-textfield
-                    label="MQTT Port"
-                    ?disabled="${!this.__sensorConfiguration.mqttEnabled}"
-                    required
-                    type="number"></mwc-textfield>
-              </espa-form-bind>
-              <espa-form-bind name="mqttUser">
-                <mwc-textfield label="MQTT User" ?disabled="${!this.__sensorConfiguration.mqttEnabled}"></mwc-textfield>
-              </espa-form-bind>
-              <espa-form-bind name="mqttPassword">
-                <mwc-textfield label="MQTT Password" ?disabled="${!this.__sensorConfiguration.mqttEnabled}"></mwc-textfield>
-              </espa-form-bind>
-            </div>
-            <div class="line">
-              <espa-form-bind name="mqttClientId">
-                <mwc-textfield label="MQTT Client ID" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
-              </espa-form-bind>
-              <espa-form-bind name="mqttTopic">
-                <mwc-textfield label="MQTT Topic" ?disabled="${!this.__sensorConfiguration.mqttEnabled}" required></mwc-textfield>
-              </espa-form-bind>
-            </div>
-            
-            ${JSON.stringify(this.__sensorConfiguration)}
-            
-            <espa-form-submit
-                slot="buttons"
-                .submit="${this.__updateConfiguration}"
-                success-message="Configuration updated"></espa-form-submit>
-          </espa-form>
-        `, () => html`
-          <div>
-            Loading
-          </div>
-        `)}
+          `)}
         </espa-expansion-panel>
       </esp-expansion-group>
     `;
