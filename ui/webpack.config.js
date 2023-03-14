@@ -3,6 +3,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 
+const apiAddress = process.env.API_ADDRESS;
+if (!apiAddress) {
+  console.error('Missing environment API_ADDRESS');
+  process.exit(1);
+}
+console.log("Using proxy to API on address " + apiAddress);
+
 module.exports = {
   devServer: {
     historyApiFallback: true
@@ -89,7 +96,7 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/api': 'http://192.168.100.212'
+      '/api': apiAddress // 'http://192.168.100.212'
     }
   }
 };

@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development",
+    "dev-mocked": "API_ADDRESS='http://127.0.0.1:3000' yarn dev",
+    "json-mock": "mock-json-server ./scripts/db-mock.json --port=3000",
     "build": "webpack --mode production",
     "flash": "node scripts/esp-flash.mjs",
     "arduino-copy": "rm -rf ../esp/data; mkdir ../esp/data; cp dist/*.gz dist/material-icons.woff2 ../esp/data",
@@ -23,6 +25,7 @@
     "lit-scss-loader": "^2.0.1",
     "lit-web-types": "^0.1.5",
     "material-components-web-types": "^0.2.2",
+    "mock-json-server": "^1.3.6",
     "node-fetch": "^3.3.0",
     "paper-elements-web-types": "^0.2.1",
     "sass": "^1.58.0",

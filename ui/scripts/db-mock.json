@@ -1,0 +1,22 @@
+{
+  "/api/dht/sensorData": {
+    "get": {
+      "temperature": 20,
+      "humidity": 50
+    }
+  },
+  "/api/dht/getConfiguration": {
+    "get": {
+      "temperatureOffset": 0.5,
+      "humidityOffset": -2.2,
+      "mqttEnabled": true,
+      "mqttAddress": "192.168.0.1",
+      "mqttPort": 1883
+    }
+  },
+  "/api/dht/updateConfiguration": {
+    "post": {
+      "success": true
+    }
+  }
+}
